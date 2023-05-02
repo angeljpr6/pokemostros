@@ -21,15 +21,17 @@ public class Entrenador {
      *
      * @param pokemon
      */
-    public void capturarPokemon(Pokemon pokemon){
-        if(Math.random()*101>0){
+    public boolean capturarPokemon(Pokemon pokemon){
+        if(Math.random()*101>30+pokemon.getPtosVida()*0.4){
             System.out.println("¡¡Pokemon capturado!!");
             if (pokedex.comprobarCapturado(pokemon)) {
 
             } else pokedex.anadirPokemonCapturado(pokemon);
 
             mochila.add(pokemon);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -48,16 +50,38 @@ public class Entrenador {
         mochila.add(pokemon);
     }
 
+    public void curarPokemon(){
+        for (int i = 0; i < mochila.size(); i++) {
+            mochila.get(i).setPtosVida(20);
+        }
+    }
+
+    /**
+     * Elimina un pokemon de tu mochila
+     * @param numPokemon
+     */
     public void liberarPokemon(int numPokemon){
         mochila.remove(numPokemon);
     }
 
-    public int buscarPokemon(Pokemon[] pokemons){
-        return (int)(Math.random()*(pokemons.length-1)+1);
+    /**
+     * Elije un pokemon aleatorio de un array de pokemon dado por parametro
+     * @param pokemons
+     * @return pokemon
+     */
+    public int buscarPokemon(ArrayList<Pokemon> pokemons){
+        if (pokemons.size()==0){
+            return -1;
+        }
+        return (int)(Math.random()*(pokemons.size() -1)+1);
 
     }
     public void intercambiarPokemon(Pokemon miPokemon, Entrenador entrenador, Pokemon suPokemon){
+        anadirPokemon(suPokemon);
+        entrenador.mochila.remove(suPokemon);
 
+        entrenador.anadirPokemon(miPokemon);
+        this.mochila.remove(miPokemon);
     }
 
     public void verPokedex(){
