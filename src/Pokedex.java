@@ -56,7 +56,13 @@ public class Pokedex {
                 pokemons.add(null);
             }
         }
+        if (capturado.size()<pokemon.getNumPokedex()){
+            while (capturado.size()<pokemon.getNumPokedex()){
+                capturado.add(null);
+            }
+        }
         pokemons.add(pokemon.getNumPokedex(),pokemon);
+        capturado.add(pokemon.getNumPokedex(),"No");
     }
     public void anadirPokemonCapturado(Pokemon pokemon){
         if (capturado.size()<pokemon.getNumPokedex()){
