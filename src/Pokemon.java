@@ -7,6 +7,7 @@ public class Pokemon {
     private String nombre;
     private int lvl;
     private int ptosVida;
+    private int vidaMax;
     private int ptosPoder;
     private ArrayList<Movimiento> movimientos;
 
@@ -18,6 +19,7 @@ public class Pokemon {
         this.ptosVida = ptosVida;
         this.ptosPoder = ptosPoder;
         this.movimientos=new ArrayList<>();
+        this.vidaMax=20;
 
         Movimiento placaje=new Movimiento("Placaje","Normal",5);
         Movimiento aranazo=new Movimiento("Arañazo","Normal",6);
@@ -37,6 +39,24 @@ public class Pokemon {
         }
 
     }
+    /**
+     * Elije un pokemon aleatorio de un array de pokemon dado por parametro
+     * (Esto hay que cambiarlo a la clas pokemon)
+     * @param pokemons
+     * @return pokemon
+     */
+    public static int buscarPokemon(ArrayList<Pokemon> pokemons){
+        if (pokemons.size()==0){
+            return -1;
+        }
+        return (int)(Math.random()*(pokemons.size() -1)+1);
+
+    }
+    public static void curarPokemons(ArrayList<Pokemon> pokemons){
+        for (int i = 0; i < pokemons.size(); i++) {
+            pokemons.get(i).setPtosVida(pokemons.get(i).getVidaMax());
+        }
+    }
     public void verMovimientos(){
         System.out.println("-------------------------------------");
         for (int i = 0; i < movimientos.size(); i++) {
@@ -50,26 +70,29 @@ public class Pokemon {
     public void atacarPokemon(Pokemon pokemon,int movimiento){
         //Al pokemon se le resta de vida el dano base del movimiento mas el nivel y los puntos de poder del pokemon que ataca
         //pokemon.setPtosVida(pokemon.getPtosVida()-this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl);
-
+        String texto;
         System.out.println("***********************************************");
         System.out.println(this.nombre+" uso "+this.movimientos.get(movimiento).getNombre());
 
         //En caso de ser muy efectivo (multiplica por dos)
         if (this.movimientos.get(movimiento).efectivo(pokemon)==1){
-            System.out.println("Es muy efectivo");
-            System.out.println(pokemon.getNombre()+" perdio "+((this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)*2)+" puntos de vida");
+            texto="Es muy efectivo \n";
+            texto+=pokemon.getNombre()+" perdio "+((this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)*2)+" puntos de vida\n";
+            ControlarTexto.mostrarTextoLento(texto);
             pokemon.setPtosVida(pokemon.getPtosVida()-((this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)*2));
         }
         //Poco efectivo hace la mitad de dano
         if (this.movimientos.get(movimiento).efectivo(pokemon)==3){
-            System.out.println("Es poco efectivo");
-            System.out.println(pokemon.getNombre()+" perdio "+((int)(this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)*0.5)+" puntos de vida");
+            texto="Es poco efectivo \n";
+            texto+=pokemon.getNombre()+" perdio "+((int)(this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)*0.5)+" puntos de vida\n";
+            ControlarTexto.mostrarTextoLento(texto);
             pokemon.setPtosVida((int) (pokemon.getPtosVida()-((this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)*0.5)));
         }
         //Efectivo
         if (this.movimientos.get(movimiento).efectivo(pokemon)==2){
-            System.out.println("Es efectivo");
-            System.out.println(pokemon.getNombre()+" perdio "+(this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)+" puntos de vida");
+            texto="Es efectivo \n";
+            texto+=pokemon.getNombre()+" perdio "+(this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl)+" puntos de vida\n";
+            ControlarTexto.mostrarTextoLento(texto);
             pokemon.setPtosVida(pokemon.getPtosVida()-(this.movimientos.get(movimiento).getDanoBase()+this.ptosPoder+this.lvl));
         }
         System.out.println("***********************************************");
@@ -133,5 +156,13 @@ public class Pokemon {
 
     public void setMovimientos(ArrayList<Movimiento> movimientos) {
         this.movimientos = movimientos;
+    }
+
+    public int getVidaMax() {
+        return vidaMax;
+    }
+
+    public void setVidaMax(int vidaMax) {
+        this.vidaMax = vidaMax;
     }
 }

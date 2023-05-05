@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Entrenador {
     private int id;
@@ -11,6 +12,50 @@ public class Entrenador {
         this.nombre = nombre;
         this.mochila = new ArrayList<>();
         this.pokedex = pokedex;
+    }
+    public Entrenador(int id,Pokedex pokedex){
+        this.id=id;
+        this.nombre="";
+        this.mochila = new ArrayList<>();
+        this.pokedex=pokedex;
+    }
+
+    /**
+     * Elejimos un pokemon inicial entre los tres dados por parametro
+     *
+     * @param sn
+     * @param pokemon1
+     * @param pokemon2
+     * @param pokemon3
+     * @return
+     */
+    public void elegirPokInicial(Scanner sn, Pokemon pokemon1, Pokemon pokemon2, Pokemon pokemon3){
+
+        System.out.println("1 "+pokemon1.getNombre()+"       2 "+pokemon2.getNombre()+"       3 "+pokemon3.getNombre());
+        int opcion= sn.nextInt();
+        switch (opcion){
+            case 1:
+                anadirPokemon(pokemon1);
+                System.out.println(pokemon1.getNombre()+" Se ha unido a tu equipo");
+                break;
+            case 2:
+                anadirPokemon(pokemon2);
+                System.out.println(pokemon2.getNombre()+" Se ha unido a tu equipo");
+                break;
+            case 3:
+                anadirPokemon(pokemon3);
+                System.out.println(pokemon3.getNombre()+" Se ha unido a tu equipo");
+                break;
+            default:
+                System.out.println("ere tonto o k");
+        }
+    }
+
+    public void elegirMovimiento(Scanner sn, int posTuPoke, ArrayList<Pokemon> listaPokeRival, int posSuPoke){
+        System.out.println("Elije un movimiento: ");
+        getMochila().get(posTuPoke).verMovimientos();
+        int opcion= sn.nextInt()-1;
+        getMochila().get(posTuPoke).atacarPokemon(listaPokeRival.get(posSuPoke),opcion);
     }
 
     /**
@@ -61,21 +106,11 @@ public class Entrenador {
      * @param numPokemon
      */
     public void liberarPokemon(int numPokemon){
+        ControlarTexto.mostrarTextoLento(mochila.get(numPokemon).getNombre()+" esta mas feliz que nunca, por fin sera libre");
         mochila.remove(numPokemon);
     }
 
-    /**
-     * Elije un pokemon aleatorio de un array de pokemon dado por parametro
-     * @param pokemons
-     * @return pokemon
-     */
-    public int buscarPokemon(ArrayList<Pokemon> pokemons){
-        if (pokemons.size()==0){
-            return -1;
-        }
-        return (int)(Math.random()*(pokemons.size() -1)+1);
 
-    }
     public void intercambiarPokemon(Pokemon miPokemon, Entrenador entrenador, Pokemon suPokemon){
         anadirPokemon(suPokemon);
         entrenador.mochila.remove(suPokemon);
