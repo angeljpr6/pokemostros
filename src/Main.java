@@ -119,87 +119,90 @@ public class Main {
             
             switch (opcion){
                 case 1:
-                    int idPokemonRegion=Pokemon.buscarPokemon(pokemonsRegion);
-                    if (idPokemonRegion==-1){
-                        System.out.println("Ya no queda ningun pokemon");
-                        break;
-                    }
-                    System.out.println("Un "+ pokemonsRegion.get(idPokemonRegion).getNombre()+" salvaje ha aparecido");
-                    if (protagonista.getPokedex().comprobarPokemon(pokemonsRegion.get(idPokemonRegion))){
+                    if (protagonista.getMochila().size()>0) {
 
-                    }else protagonista.getPokedex().anadirPokemonVisto(pokemonsRegion.get(idPokemonRegion));
-
-
-                    salirPelea=false;
-                    while (salirPelea==false) {
-                        
-                        opcion = menuLucha(sn, protagonista, pokemonsRegion, posicionPokemon, idPokemonRegion);
-                        
-                        switch (opcion) {
-                            case 1:
-                                protagonista.elegirMovimiento(sn,posicionPokemon,pokemonsRegion,idPokemonRegion);
-                                break;
-                            case 2:
-                                double huir=Math.random()*10;
-                                if (huir>4){
-                                    System.out.println("Has logrado escapar");
-                                    salirPelea=true;
-                                } else System.out.println("No has logrado escapar");
-                                break;
-                            case 3:
-                                System.out.println("¿Que pokemon quieres usar?");
-                                protagonista.verMochila();
-                                while (true) {
-                                    posicionPokemon= sn.nextInt()-1;
-                                    if (protagonista.getMochila().get(posicionPokemon).getPtosVida()==0){
-                                        System.out.println("El pokemon esta debilitado, no puede combatir");
-                                        System.out.println("Elije otro pokemon");
-                                    } else break;
-                                }
-                                break;
-                            case 4:
-                                if (protagonista.capturarPokemon(pokemonsRegion.get(idPokemonRegion))){
-                                    salirPelea=true;
-                                }else System.out.println("Se ha escapado");
-                                sn.nextLine();
-                                break;
-                        }
-
-                        //Victoria
-                        if (pokemonsRegion.get(idPokemonRegion).getPtosVida()<=0){
-                            System.out.println("Felicidades has derrotado al "+ pokemonsRegion.get(idPokemonRegion).getNombre());
-                            pokemonsRegion.remove(pokemonsRegion.get(idPokemonRegion));
+                        int idPokemonRegion = Pokemon.buscarPokemon(pokemonsRegion);
+                        if (idPokemonRegion == -1) {
+                            System.out.println("Ya no queda ningun pokemon");
                             break;
                         }
-                        if (salirPelea==false) {
-                            aux = (int) Math.floor(Math.random() * pokemonsRegion.get(idPokemonRegion).getMovimientos().size());
-                            pokemonsRegion.get(idPokemonRegion).atacarPokemon(protagonista.getMochila().get(posicionPokemon), aux);
+                        System.out.println("Un " + pokemonsRegion.get(idPokemonRegion).getNombre() + " salvaje ha aparecido");
+                        if (protagonista.getPokedex().comprobarPokemon(pokemonsRegion.get(idPokemonRegion))) {
 
-                            //Pokemon Debilitado
-                            if (protagonista.getMochila().get(posicionPokemon).getPtosVida() <= 0) {
-                                System.out.println(protagonista.getMochila().get(posicionPokemon).getNombre() + " se ha debilitado");
-                                nPokeDebilitados++;
-                                if (nPokeDebilitados == protagonista.getMochila().size()) {
-                                    System.out.println("No te quedan mas pokemon, ");
-                                    ControlarTexto.mostrarTextoLento("has perdido...");
-                                    salirPelea = true;
-                                } else {
+                        } else protagonista.getPokedex().anadirPokemonVisto(pokemonsRegion.get(idPokemonRegion));
+
+
+                        salirPelea = false;
+                        while (salirPelea == false) {
+
+                            opcion = menuLucha(sn, protagonista, pokemonsRegion, posicionPokemon, idPokemonRegion);
+
+                            switch (opcion) {
+                                case 1:
+                                    protagonista.elegirMovimiento(sn, posicionPokemon, pokemonsRegion, idPokemonRegion);
+                                    break;
+                                case 2:
+                                    double huir = Math.random() * 10;
+                                    if (huir > 4) {
+                                        System.out.println("Has logrado escapar");
+                                        salirPelea = true;
+                                    } else System.out.println("No has logrado escapar");
+                                    break;
+                                case 3:
+                                    System.out.println("¿Que pokemon quieres usar?");
                                     protagonista.verMochila();
                                     while (true) {
-                                        System.out.println("Elije otro pokemon");
                                         posicionPokemon = sn.nextInt() - 1;
                                         if (protagonista.getMochila().get(posicionPokemon).getPtosVida() == 0) {
                                             System.out.println("El pokemon esta debilitado, no puede combatir");
+                                            System.out.println("Elije otro pokemon");
                                         } else break;
+                                    }
+                                    break;
+                                case 4:
+                                    if (protagonista.capturarPokemon(pokemonsRegion.get(idPokemonRegion))) {
+                                        salirPelea = true;
+                                    } else System.out.println("Se ha escapado");
+                                    sn.nextLine();
+                                    break;
+                            }
+
+                            //Victoria
+                            if (pokemonsRegion.get(idPokemonRegion).getPtosVida() <= 0) {
+                                System.out.println("Felicidades has derrotado al " + pokemonsRegion.get(idPokemonRegion).getNombre());
+                                pokemonsRegion.remove(pokemonsRegion.get(idPokemonRegion));
+                                break;
+                            }
+                            if (salirPelea == false) {
+                                aux = (int) Math.floor(Math.random() * pokemonsRegion.get(idPokemonRegion).getMovimientos().size());
+                                pokemonsRegion.get(idPokemonRegion).atacarPokemon(protagonista.getMochila().get(posicionPokemon), aux);
+
+                                //Pokemon Debilitado
+                                if (protagonista.getMochila().get(posicionPokemon).getPtosVida() <= 0) {
+                                    System.out.println(protagonista.getMochila().get(posicionPokemon).getNombre() + " se ha debilitado");
+                                    nPokeDebilitados++;
+                                    if (nPokeDebilitados == protagonista.getMochila().size()) {
+                                        System.out.println("No te quedan mas pokemon, ");
+                                        ControlarTexto.mostrarTextoLento("has perdido...");
+                                        salirPelea = true;
+                                    } else {
+                                        protagonista.verMochila();
+                                        while (true) {
+                                            System.out.println("Elije otro pokemon");
+                                            posicionPokemon = sn.nextInt() - 1;
+                                            if (protagonista.getMochila().get(posicionPokemon).getPtosVida() == 0) {
+                                                System.out.println("El pokemon esta debilitado, no puede combatir");
+                                            } else break;
+                                        }
                                     }
                                 }
                             }
+                            sn.nextLine();
+                            ControlarTexto.limpiarConsola();
                         }
-                        sn.nextLine();
-                        ControlarTexto.limpiarConsola();
-                    }
-                    Pokemon.curarPokemons(pokemonsRegion);
-                    Pokemon.curarPokemons(protagonista.getMochila());
+                        Pokemon.curarPokemons(pokemonsRegion);
+                        Pokemon.curarPokemons(protagonista.getMochila());
+                    }else System.out.println("No tienes ningun pokemon en tu inventario\n");
                     break;
                 case 2:
                     protagonista.verMochila();
