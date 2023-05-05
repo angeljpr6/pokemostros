@@ -121,25 +121,21 @@ public class Main {
                 case 1:
                     if (protagonista.getMochila().size()>0) {
 
-                        int idPokemonRegion = Pokemon.buscarPokemon(pokemonsRegion);
-                        if (idPokemonRegion == -1) {
-                            System.out.println("Ya no queda ningun pokemon");
-                            break;
-                        }
-                        System.out.println("Un " + pokemonsRegion.get(idPokemonRegion).getNombre() + " salvaje ha aparecido");
-                        if (protagonista.getPokedex().comprobarPokemon(pokemonsRegion.get(idPokemonRegion))) {
+                        Pokemon pokemonSalvaje=Pokemon.buscarPokemon(pokemonsRegion);
+                        System.out.println("Un " + pokemonSalvaje.getNombre() + " salvaje ha aparecido");
+                        if (protagonista.getPokedex().comprobarPokemon(pokemonSalvaje)) {
 
-                        } else protagonista.getPokedex().anadirPokemonVisto(pokemonsRegion.get(idPokemonRegion));
+                        } else protagonista.getPokedex().anadirPokemonVisto(pokemonSalvaje);
 
 
                         salirPelea = false;
                         while (salirPelea == false) {
 
-                            opcion = menuLucha(sn, protagonista, pokemonsRegion, posicionPokemon, idPokemonRegion);
+                            opcion = menuLucha(sn, protagonista, posicionPokemon, pokemonSalvaje);
 
                             switch (opcion) {
                                 case 1:
-                                    protagonista.elegirMovimiento(sn, posicionPokemon, pokemonsRegion, idPokemonRegion);
+                                    protagonista.elegirMovimiento(sn, posicionPokemon, pokemonSalvaje);
                                     break;
                                 case 2:
                                     double huir = Math.random() * 10;
@@ -278,19 +274,18 @@ public class Main {
      * 
      * @param sn
      * @param entrenador1
-     * @param pokemonsRegion
      * @param posicionPokemon
-     * @param idPokemonRegion
+     * @param pokemon
      * @return int o
      */
-    private static int menuLucha(Scanner sn, Entrenador entrenador1, ArrayList<Pokemon> pokemonsRegion, int posicionPokemon, int idPokemonRegion) {
+    private static int menuLucha(Scanner sn, Entrenador entrenador1, int posicionPokemon, Pokemon pokemon) {
         int opcion;
         System.out.println("╔════════════════════════════════════════════════════════");
-        System.out.println("║                                  "+ pokemonsRegion.get(idPokemonRegion).getNombre());
-        System.out.println("║                                  Nivel "+ pokemonsRegion.get(idPokemonRegion).getLvl());
-        System.out.print("║                                  Vida  "+ pokemonsRegion.get(idPokemonRegion).getPtosVida());
-        for (int j = 0; j < pokemonsRegion.get(idPokemonRegion).getPtosVida(); j+=3) {
-            if (j+3> pokemonsRegion.get(idPokemonRegion).getPtosVida()){
+        System.out.println("║                                  "+ pokemon.getNombre());
+        System.out.println("║                                  Nivel "+ pokemon.getLvl());
+        System.out.print("║                                  Vida  "+ pokemon.getPtosVida());
+        for (int j = 0; j < pokemon.getPtosVida(); j+=3) {
+            if (j+3> pokemon.getPtosVida()){
                 break;
             }
             System.out.print("-");

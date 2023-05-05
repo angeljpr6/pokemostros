@@ -45,11 +45,12 @@ public class Pokemon {
      * @param pokemons
      * @return pokemon
      */
-    public static int buscarPokemon(ArrayList<Pokemon> pokemons){
+    public static Pokemon buscarPokemon(ArrayList<Pokemon> pokemons){
         if (pokemons.size()==0){
             return -1;
         }
-        return (int)(Math.random()*(pokemons.size() -1)+1);
+        Pokemon pokemon=pokemons.get((int)(Math.random()*(pokemons.size() -1)+1));
+        return pokemon;
 
     }
     public static void curarPokemons(ArrayList<Pokemon> pokemons){
