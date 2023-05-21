@@ -30,9 +30,16 @@ public class Entrenador {
      * @return
      */
     public void elegirPokInicial(Scanner sn, Pokemon pokemon1, Pokemon pokemon2, Pokemon pokemon3){
-
-        System.out.println("1 "+pokemon1.getNombre()+"       2 "+pokemon2.getNombre()+"       3 "+pokemon3.getNombre());
-        int opcion= sn.nextInt();
+        int opcion=0;
+        while (true) {
+            System.out.println("1 " + pokemon1.getNombre() + "       2 " + pokemon2.getNombre() + "       3 " + pokemon3.getNombre());
+            opcion= sn.nextInt();
+            if (opcion<1 || opcion>3){
+                System.out.println("Elige uno coño que te lo estoy dando");
+                continue;
+            }
+            break;
+        }
         switch (opcion){
             case 1:
                 anadirPokemon(pokemon1);
@@ -51,11 +58,18 @@ public class Entrenador {
         }
     }
 
-    public void elegirMovimiento(Scanner sn, int posTuPoke, ArrayList<Pokemon> listaPokeRival, int posSuPoke){
-        System.out.println("Elije un movimiento: ");
-        getMochila().get(posTuPoke).verMovimientos();
-        int opcion= sn.nextInt()-1;
-        getMochila().get(posTuPoke).atacarPokemon(listaPokeRival.get(posSuPoke),opcion);
+    public void elegirMovimiento(Scanner sn, int posTuPoke, Pokemon pokemonRival){
+        while (true) {
+            System.out.println("Elije un movimiento: ");
+            getMochila().get(posTuPoke).verMovimientos();
+            int opcion = sn.nextInt() - 1;
+            if (getMochila().get(posTuPoke).getMovimientos().get(opcion) == null) {
+                System.out.println("La opcion no corresponde a ningun movimiento");
+                continue;
+            }
+            getMochila().get(posTuPoke).atacarPokemon(pokemonRival, opcion);
+            break;
+        }
     }
 
     /**
@@ -73,7 +87,8 @@ public class Entrenador {
 
             } else pokedex.anadirPokemonCapturado(pokemon);
 
-            mochila.add(pokemon);
+            Pokemon pokemon1=new Pokemon(pokemon);
+            mochila.add(pokemon1);
             return true;
         }
         return false;
@@ -92,7 +107,8 @@ public class Entrenador {
         if (pokedex.comprobarCapturado(pokemon)) {
 
         } else pokedex.anadirPokemonCapturado(pokemon);
-        mochila.add(pokemon);
+        Pokemon pokemon1 =new Pokemon(pokemon);
+        mochila.add(pokemon1);
     }
 
     public void curarPokemon(){
@@ -107,6 +123,7 @@ public class Entrenador {
      */
     public void liberarPokemon(int numPokemon){
         ControlarTexto.mostrarTextoLento(mochila.get(numPokemon).getNombre()+" esta mas feliz que nunca, por fin sera libre");
+        System.out.println();
         mochila.remove(numPokemon);
     }
 
@@ -141,6 +158,7 @@ public class Entrenador {
                 System.out.println("║ Tipo : "+ mochila.get(i).getTipo());
                 System.out.println("║ Numero Pokedex : "+ mochila.get(i).getNumPokedex());
                 System.out.println("║ Nivel : "+ mochila.get(i).getLvl());
+                System.out.println("║ Exp : "+ mochila.get(i).getExp());
                 System.out.println("║ Vida : "+ mochila.get(i).getPtosVida());
                 System.out.println("║ Poder : "+ mochila.get(i).getPtosPoder());
                 System.out.println("║ ----------------------------------------");

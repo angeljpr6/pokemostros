@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
 
         Scanner sn=new Scanner(System.in);
@@ -16,13 +17,13 @@ public class Main {
 
         // Pokemons
         Pokemon pikachu = new Pokemon(25,"Electrico","Pikachu",1,20,5);
-        Pokemon bulbasaur = new Pokemon(1,"Planta","Bulbasaur",1,20,5);
-        Pokemon ivysaur = new Pokemon(2,"Planta","Ivysaur",1,40,5);
-        Pokemon venusaur = new Pokemon(3,"Planta","Venusaur",1,100,5);
-        Pokemon charmander = new Pokemon(4,"Fuego","Charmander",1,20,5);
+        Pokemon bulbasaur = new Pokemon(1,"Planta","Bulbasaur",5,28,5);
+        Pokemon ivysaur = new Pokemon(2,"Planta","Ivysaur",1,20,5);
+        Pokemon venusaur = new Pokemon(3,"Planta","Venusaur",1,20,5);
+        Pokemon charmander = new Pokemon(4,"Fuego","Charmander",5,28,5);
         Pokemon charmeleon = new Pokemon(5,"Fuego","Charmeleon",1,20,5);
         Pokemon charizard = new Pokemon(6,"Fuego","Charizard",1,20,5);
-        Pokemon squirtle = new Pokemon(7,"Agua","Squirtle",1,20,5);
+        Pokemon squirtle = new Pokemon(7,"Agua","Squirtle",5,28,5);
         Pokemon wartortle = new Pokemon(8,"Agua","Wartortle",1,20,5);
         Pokemon blastoise = new Pokemon(9,"Agua","Blastoise",1,20,5);
         Pokemon growlithe = new Pokemon(58,"Fuego","Growlithe",6,38,8);
@@ -50,7 +51,6 @@ public class Main {
         Entrenador dani=new Entrenador(2,"Ornitologo Dani",pokedexDani);
         dani.anadirPokemon(growlithe);
 
-
         Entrenador raul=new Entrenador(2,"Montañero Raul",pokedexRaul);
         raul.anadirPokemon(vaporeon);
 
@@ -64,69 +64,39 @@ public class Main {
         entrenadores.add(cynthia);
 
 
-        //La posicion del pokemon que estas usando (Hay que restarle 1) y el numero de pokemons debilitados
-        int posicionPokemon=0,nPokeDebilitados=0;
+        //posicionPokemon: la posicion del pokemon que estas usando (Hay que restarle 1)
+        //nPokeDebilitados: el numero de pokemons debilitados en la mochila del protagonista
+        //nivelPokSalv : el nivel del pokemon salvaje
+        int posicionPokemon=0,nPokeDebilitados=0,nivelPokSalv;
 
-        int aux=0;
 
         //Un boolean con el que nos aseguramos de si se continuara la pelea o no
         boolean salirPelea=false;
 
-        //Elijes tu pokemon inicial
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("Buenas, soy el profesor Leonardo,\n" +
-                "Me dedico a la investigacion de pokemon en toda la region de Gran Canaria.\n");
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("Los pokemon son criaturas que conviven con los humanos, algunos los usan como\n" +
-                "mascotas y otros, como tu, los esclavizan y obligan a pelear entre ellos\n\n" +
-                "Dime ¿Cual es tu nombre?\n");
-        protagonista.setNombre(sn.nextLine());
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("\n"+protagonista.getNombre()+"... Vaya nombre\n" +
-                "Bueno "+protagonista.getNombre()+" es hora de que empieces un aventura pokemon\n" +
-                "Pero sin un pokemon para empezar no puedes hacer nada que putada");
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("Venga va, que me has caido bien, te puedo dejar uno de estos\n" +
-                "elije\n");
-        protagonista.elegirPokInicial(sn,charmander,squirtle,bulbasaur);
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("Pues ya que te deje el pokemon tendras que trabajar para mi\n" +
-                "Toma esto\n");
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
-        System.out.println("**Has recibido una pokedex**\n");
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("Con esto registraras pokemon una vez te encuentres con ellos\n" +
-                "Intenta capturarlos a todos para yo poder reunir mas informacion sobre ellos\n" +
-                "(A ti solo te saldra si esta capturado o no)\n");
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
-        ControlarTexto.mostrarTextoLento("Pues venga tira a pagar la deuda de tu "+protagonista.getMochila().get(0).getNombre()+"\n");
-        sn.nextLine();
-        ControlarTexto.limpiarConsola();
+        //Texto inicial
+        introduccion(sn, protagonista, bulbasaur, charmander, squirtle);
 
         //Opcion de los menus
         int opcion=1;
 
         //TODOS LOS MENUS
         while (opcion!=-2) {
-            
+
             opcion = menuPrincipal(sn);
             
             switch (opcion){
                 case 1:
                     if (protagonista.getMochila().size()>0) {
 
+
+                        nivelPokSalv=elejirDificultad(sn);
                         Pokemon pokemonSalvaje=Pokemon.buscarPokemon(pokemonsRegion);
                         System.out.println("Un " + pokemonSalvaje.getNombre() + " salvaje ha aparecido");
+                        pokemonSalvaje.setLvl(nivelPokSalv);
+                        pokemonSalvaje.setPtosVida(20+(nivelPokSalv*2));
                         if (protagonista.getPokedex().comprobarPokemon(pokemonSalvaje)) {
 
                         } else protagonista.getPokedex().anadirPokemonVisto(pokemonSalvaje);
-
 
                         salirPelea = false;
                         while (salirPelea == false) {
@@ -138,11 +108,7 @@ public class Main {
                                     protagonista.elegirMovimiento(sn, posicionPokemon, pokemonSalvaje);
                                     break;
                                 case 2:
-                                    double huir = Math.random() * 10;
-                                    if (huir > 4) {
-                                        System.out.println("Has logrado escapar");
-                                        salirPelea = true;
-                                    } else System.out.println("No has logrado escapar");
+                                    salirPelea=huir();
                                     break;
                                 case 3:
                                     System.out.println("¿Que pokemon quieres usar?");
@@ -156,42 +122,32 @@ public class Main {
                                     }
                                     break;
                                 case 4:
-                                    if (protagonista.capturarPokemon(pokemonsRegion.get(idPokemonRegion))) {
+                                    if (protagonista.capturarPokemon(pokemonSalvaje)) {
                                         salirPelea = true;
                                     } else System.out.println("Se ha escapado");
                                     sn.nextLine();
                                     break;
+                                default:
+                                    System.out.println("La opcion no es valida");
+                                    continue;
                             }
 
                             //Victoria
-                            if (pokemonsRegion.get(idPokemonRegion).getPtosVida() <= 0) {
-                                System.out.println("Felicidades has derrotado al " + pokemonsRegion.get(idPokemonRegion).getNombre());
-                                pokemonsRegion.remove(pokemonsRegion.get(idPokemonRegion));
+                            if (pokemonSalvaje.getPtosVida() <= 0) {
+                                System.out.println("Felicidades has derrotado al " +pokemonSalvaje.getNombre());
+                                double experiencia=pokemonSalvaje.getLvl()*40/protagonista.getMochila().get(posicionPokemon).getLvl();
+                                protagonista.getMochila().get(posicionPokemon).subirExp(experiencia);
                                 break;
                             }
+
                             if (salirPelea == false) {
-                                aux = (int) Math.floor(Math.random() * pokemonsRegion.get(idPokemonRegion).getMovimientos().size());
-                                pokemonsRegion.get(idPokemonRegion).atacarPokemon(protagonista.getMochila().get(posicionPokemon), aux);
+                                // Se elije un movimiento aleatorio del pokemon salvaje
+                                pokemonSalvaje.atacarPokemon(protagonista.getMochila().get(posicionPokemon), (int) Math.floor(Math.random() * pokemonSalvaje.getMovimientos().size()));
 
                                 //Pokemon Debilitado
-                                if (protagonista.getMochila().get(posicionPokemon).getPtosVida() <= 0) {
-                                    System.out.println(protagonista.getMochila().get(posicionPokemon).getNombre() + " se ha debilitado");
-                                    nPokeDebilitados++;
-                                    if (nPokeDebilitados == protagonista.getMochila().size()) {
-                                        System.out.println("No te quedan mas pokemon, ");
-                                        ControlarTexto.mostrarTextoLento("has perdido...");
-                                        salirPelea = true;
-                                    } else {
-                                        protagonista.verMochila();
-                                        while (true) {
-                                            System.out.println("Elije otro pokemon");
-                                            posicionPokemon = sn.nextInt() - 1;
-                                            if (protagonista.getMochila().get(posicionPokemon).getPtosVida() == 0) {
-                                                System.out.println("El pokemon esta debilitado, no puede combatir");
-                                            } else break;
-                                        }
-                                    }
-                                }
+                                nPokeDebilitados=menuPokemonDebilitado(protagonista,posicionPokemon,nPokeDebilitados,sn);
+                                salirPelea=menuPerder(protagonista,nPokeDebilitados);
+
                             }
                             sn.nextLine();
                             ControlarTexto.limpiarConsola();
@@ -207,13 +163,23 @@ public class Main {
                     protagonista.getPokedex().verPokedex();
                     break;
                 case 4:
-                    System.out.println("Elije la posicion del pokemon que quieras liberar");
-                    protagonista.verMochila();
-                    opcion= sn.nextInt();
-                    protagonista.liberarPokemon(opcion-1);
+                    while (true) {
+                        System.out.println("Elije la posicion del pokemon que quieras liberar (-1 para salir)");
+                        protagonista.verMochila();
+                        opcion = sn.nextInt();
+                        if (opcion==-1){
+                            break;
+                        }
+                        try{
+                            protagonista.liberarPokemon(opcion - 1);
+                        }catch (IndexOutOfBoundsException e){
+                            System.out.println("La opcion elegida no corresponde a ningun pokemon");
+                            continue;
+                        }
+                        break;
+                    }
                     break;
                 case 5:
-                    int suPokemon=0,tuPokemon=0;
                     System.out.println("¿Con quien quieres intercambiar?");
                     for (int i = 0; i < entrenadores.size(); i++) {
                         System.out.println((i+1)+": "+entrenadores.get(i).getNombre());
@@ -221,16 +187,16 @@ public class Main {
                     opcion= sn.nextInt();
                     switch (opcion){
                         case 1:
-                            menuIntercambiarPokemon(protagonista, suPokemon, lucas, tuPokemon, sn);
+                            menuIntercambiarPokemon(protagonista, lucas, sn);
                             break;
                         case 2:
-                            menuIntercambiarPokemon(protagonista, suPokemon, dani, tuPokemon, sn);
+                            menuIntercambiarPokemon(protagonista, dani, sn);
                             break;
                         case 3:
-                            menuIntercambiarPokemon(protagonista, suPokemon, raul, tuPokemon, sn);
+                            menuIntercambiarPokemon(protagonista, raul, sn);
                             break;
                         case 4:
-                            menuIntercambiarPokemon(protagonista, suPokemon, cynthia, tuPokemon, sn);
+                            menuIntercambiarPokemon(protagonista, cynthia, sn);
                             break;
                     }
                     break;
@@ -238,22 +204,202 @@ public class Main {
                     System.out.println("tu ere tonto o k");
             }
 
+            nPokeDebilitados=0;
         }
 
 
 
     }
 
-    private static void menuIntercambiarPokemon(Entrenador entrenador1, int tuPokemon, Entrenador entrenador2, int suPokemon, Scanner sn) {
-        ControlarTexto.mostrarTextoLento("Elije el pokemon que quieres");
-        entrenador2.verMochila();
-        tuPokemon = sn.nextInt()-1;
-        ControlarTexto.mostrarTextoLento("Elije el pokemon que quieres ofrecer");
-        entrenador1.verMochila();
-        suPokemon = sn.nextInt()-1;
-        entrenador1.intercambiarPokemon(entrenador1.getMochila().get(suPokemon), entrenador2, entrenador2.getMochila().get(tuPokemon));
+    private static void introduccion(Scanner sn, Entrenador protagonista, Pokemon bulbasaur, Pokemon charmander, Pokemon squirtle) {
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("Buenas, soy el profesor Leonardo,\n" +
+                "Me dedico a la investigacion de pokemon en toda la region de Gran Canaria.\n");
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("Los pokemon son criaturas que conviven con los humanos, algunos los usan como\n" +
+                "mascotas y otros, como tu, los esclavizan y obligan a pelear entre ellos\n\n" +
+                "Dime ¿Cual es tu nombre?\n");
+        protagonista.setNombre(sn.nextLine());
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("\n"+ protagonista.getNombre()+"... Vaya nombre\n" +
+                "Bueno "+ protagonista.getNombre()+" es hora de que empieces un aventura pokemon\n" +
+                "Aunque... sin un pokemon para empezar poco puedes hacer");
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("Venga va, que me has caido bien, te puedo dejar uno de estos\n" +
+                "elije\n");
+        protagonista.elegirPokInicial(sn, charmander, squirtle, bulbasaur);
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("Pues ya que te deje el pokemon tendras que trabajar para mi\n" +
+                "Toma esto\n");
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
+        System.out.println("**Has recibido una pokedex**\n");
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("Con esto registraras pokemon una vez te encuentres con ellos\n" +
+                "Intenta capturarlos a todos para yo poder reunir mas informacion sobre ellos\n" +
+                "(A ti solo te saldra si esta capturado o no)\n");
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
+        ControlarTexto.mostrarTextoLento("Pues venga tira a pagar la deuda de tu "+ protagonista.getMochila().get(0).getNombre()+"\n");
+        sn.nextLine();
+        ControlarTexto.limpiarConsola();
     }
 
+    /**
+     * Este metodo hace una operacion matematica para dejar o no escapar al entrenador
+     *
+     * @return el boolean salirPelea
+     */
+    private static boolean huir(){
+        boolean salirPelea;
+        double huir = Math.random() * 10;
+        if (huir > 4) {
+            System.out.println("Has logrado escapar");
+            return salirPelea = true;
+        } else System.out.println("No has logrado escapar");
+        return salirPelea=false;
+    }
+
+    /**
+     * /**
+     * Si se debilita un pokemon se pasara este metodo que sumara el numero de pokemon debilitados (un indicador que cuantos pokemon te quedan por usar)
+     * y en caso de que te quede alguno mas con vida suficiente para pelear te ensemara la mochila y te pedira que elijas un pokemon con vida.
+     *
+     * @param tuEntrenador
+     * @param posTuPok
+     * @param nPokeDebilitados
+     * @param sn
+     * @return numero de pokemon debilitados
+     */
+    private static int menuPokemonDebilitado(Entrenador tuEntrenador,int posTuPok,int nPokeDebilitados,Scanner sn){
+        if (tuEntrenador.getMochila().get(posTuPok).getPtosVida() <= 0) {
+            System.out.println(tuEntrenador.getMochila().get(posTuPok).getNombre() + " se ha debilitado");
+            nPokeDebilitados++;
+            if (nPokeDebilitados < tuEntrenador.getMochila().size()) {
+                tuEntrenador.verMochila();
+                while (true) {
+                    System.out.println("Elije otro pokemon");
+                    posTuPok = sn.nextInt() - 1;
+                    if (tuEntrenador.getMochila().get(posTuPok).getPtosVida() == 0) {
+                        System.out.println("El pokemon esta debilitado, no puede combatir");
+                    } else break;
+                }
+            }
+        }
+        return nPokeDebilitados;
+    }
+
+    /**
+     * Este metodo pide al usuario que elija una dificultad lo cual afectara al nivel del pokemon rival
+     * @param sn
+     * @return
+     */
+    public static int elejirDificultad(Scanner sn){
+
+        int opcion,nivelPokSalv=0;
+
+        while (true) {
+
+        System.out.println("Elije una dificultad:");
+        System.out.println("1: Nivel 1-10");
+        System.out.println("2: Nivel 11-20");
+        System.out.println("3: Nivel 21-30");
+        System.out.println("4: Nivel 31-40");
+        System.out.println("5: Nivel 41-50");
+        System.out.println("6: Nivel 51-100");
+
+        opcion=Integer.parseInt(sn.next());
+
+
+            switch (opcion) {
+                case 1:
+                    nivelPokSalv = ((int) (Math.random() * 10 + 1));
+                    break;
+                case 2:
+                    nivelPokSalv = ((int) (Math.random() * 10 + 11));
+                    break;
+                case 3:
+                    nivelPokSalv = ((int) (Math.random() * 10 + 21));
+                    break;
+                case 4:
+                    nivelPokSalv = ((int) (Math.random() * 10 + 31));
+                    break;
+                case 5:
+                    nivelPokSalv = ((int) (Math.random() * 10 + 41));
+                    break;
+                case 6:
+                    nivelPokSalv = ((int) (Math.random() * 50 + 51));
+                    break;
+                default:
+                    System.out.println("Ese nivel no existe colega");
+                    continue;
+
+            }
+            break;
+        }
+        return nivelPokSalv;
+    }
+
+    /**
+     * Cuando se debilita un pokemon se pasara por este metodo para que en caso de que no quede ninguno
+     * con vida el boolean salirPelea se iguales a true (Es decir se saldra de la pelea porquer no quedan
+     * pokemons con vida con los que poder combatir)
+     *
+     * @param tuEntrenador
+     * @param nPokeDebilitados
+     * @return boolean salir pelea
+     */
+    private static boolean menuPerder(Entrenador tuEntrenador,int nPokeDebilitados){
+        boolean salirPelea;
+        if (nPokeDebilitados == tuEntrenador.getMochila().size()) {
+            System.out.println("No te quedan mas pokemon, ");
+            ControlarTexto.mostrarTextoLento("has perdido...");
+            return salirPelea=true;
+        }
+        return salirPelea=false;
+    }
+
+    /**
+     * Menu que muestra la mochila del otro entrenador y la tuya y te pide que elijas que pokemon quieres intercambiar de cada uno
+     * @param entrenador1
+     * @param entrenador2
+     * @param sn
+     */
+    private static void menuIntercambiarPokemon(Entrenador entrenador1, Entrenador entrenador2, Scanner sn) {
+        int tuPokemon,suPokemon;
+        while (true) {
+            System.out.println("Elije el pokemon que quieres");
+            entrenador2.verMochila();
+            suPokemon = sn.nextInt() - 1;
+            if (entrenador2.getMochila().size()<(suPokemon+1) || suPokemon<0){
+                System.out.println("Ese pokemon no existe");
+                continue;
+            }
+            break;
+        }
+
+        while (true) {
+            System.out.println("Elije el pokemon que quieres ofrecer");
+            entrenador1.verMochila();
+            tuPokemon = sn.nextInt() - 1;
+            if (entrenador1.getMochila().size()<(tuPokemon+1) || tuPokemon<0){
+                System.out.println("Ese pokemon no existe");
+                continue;
+            }
+            break;
+        }
+        entrenador1.intercambiarPokemon(entrenador1.getMochila().get(tuPokemon), entrenador2, entrenador2.getMochila().get(suPokemon));
+    }
+
+    /**
+     * Menu principal de juego
+     * @param sn
+     * @return
+     */
     private static int menuPrincipal(Scanner sn) {
         int opcion;
         System.out.println("╔════════════════════════════╗");
@@ -276,7 +422,7 @@ public class Main {
      * @param entrenador1
      * @param posicionPokemon
      * @param pokemon
-     * @return int o
+     * @return int con la opcion elegida
      */
     private static int menuLucha(Scanner sn, Entrenador entrenador1, int posicionPokemon, Pokemon pokemon) {
         int opcion;
@@ -313,9 +459,5 @@ public class Main {
         System.out.println("╚═══════════════════════════════════════════╝");
         opcion = sn.nextInt();
         return opcion;
-    }
-
-    public static void showMenu(){
-
     }
 }

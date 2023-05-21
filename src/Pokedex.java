@@ -43,7 +43,7 @@ public class Pokedex {
     }
 
     public boolean comprobarPokemon(Pokemon pokemon){
-        if (pokemons.size()<pokemon.getNumPokedex() || pokemons.size()==0){
+        if (pokemons.size()<(pokemon.getNumPokedex()+1) || pokemons.size()==0){
             return false;
         }else if (pokemons.get(pokemon.getNumPokedex())==null){
             return false;
